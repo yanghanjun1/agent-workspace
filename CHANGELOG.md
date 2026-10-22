@@ -6,6 +6,9 @@ Versioning: [SemVer](https://semver.org/). The spec and the tools version togeth
 ## [Unreleased]
 
 ### Added
+- `examples/golden/ca-review/` — a domain whose output is a judgement rather than a
+  record: blind passes, the disagreement kept, one dated verdict. The third domain shape,
+  and the one `CONTRIBUTING.md` had been asking for.
 - `examples/golden/ca-finance/` — a domain where every number must come from a script.
   Signed amounts, csv for data and markdown for rules, read-before-write, a refund that
   offsets its category. This is the fixture that makes M5 obvious instead of fussy.

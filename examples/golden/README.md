@@ -9,6 +9,7 @@ break. Each one is a *shape*, not a topic:
 |---|---|
 | `ca-reading/` | a domain whose output is an appended record, with a reporter |
 | `ca-finance/` | a domain where every number must come from a script (M5) |
+| `ca-review/` | a domain whose output is a judgement: blind passes, kept disagreement, one dated verdict |
 
 Your domains will not look like these, and they should not. If you are looking for how to
 build one, read `docs/03-build-a-domain.md` and let `aw new` do it — the fixtures are what
