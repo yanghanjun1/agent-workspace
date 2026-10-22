@@ -6,6 +6,10 @@ Versioning: [SemVer](https://semver.org/). The spec and the tools version togeth
 ## [Unreleased]
 
 ### Added
+- `examples/golden/ca-finance/` — a domain where every number must come from a script.
+  Signed amounts, csv for data and markdown for rules, read-before-write, a refund that
+  offsets its category. This is the fixture that makes M5 obvious instead of fussy.
+- `examples/golden/README.md` — fixtures are not a recommended domain set.
 - `docs/06-case-study.md` — eight months, six domains, and the failures that produced
   each rule. The provenance of the spec, which is the one thing a reader cannot get from
   the spec itself.

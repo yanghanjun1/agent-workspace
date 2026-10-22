@@ -148,7 +148,7 @@ WHY.md           five failure scenes, three layers, the cost
 PORTABILITY.md   the mechanical criterion, tiers, degradation, measured matrix
 templates/       the identity file and the domain skeleton (.zh.md variants for --lang zh)
 tools/aw         check · new · verify · link  (standard library only)
-examples/        golden fixture + ten input needs used by the tests
+examples/        golden fixtures (reading, finance) + ten input needs used by the tests
 docs/            long-form guides: philosophy, layout, building a domain, memory, pitfalls, case study
 tests/           22 tests: every MUST can fail, and ten needs conform
 ```

@@ -98,19 +98,47 @@ class TestLocales(unittest.TestCase):
 
 
 class TestGoldenFixture(unittest.TestCase):
-    def test_golden_domain_conforms_inside_a_workspace(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            ws = seed_workspace(Path(tmp))
-            shutil.copytree(GOLDEN / "ca-reading", ws / "ca-reading")
-            self.assertEqual(failures(ws), [])
+    def test_every_golden_domain_conforms(self):
+        fixtures = sorted(p for p in GOLDEN.glob("*/") if (p / "SKILL.md").is_file())
+        self.assertGreaterEqual(len(fixtures), 2, "keep at least two shapes")
+        for fixture in fixtures:
+            with self.subTest(domain=fixture.name), tempfile.TemporaryDirectory() as tmp:
+                ws = seed_workspace(Path(tmp))
+                shutil.copytree(fixture, ws / fixture.name)
+                self.assertEqual(failures(ws), [])
 
-    def test_golden_reporter_runs(self):
+    def test_reading_reporter_runs(self):
         script = GOLDEN / "ca-reading" / "4-engine" / "report.py"
         result = subprocess.run(
             [sys.executable, str(script), "--week", "--field", "pages"],
             capture_output=True, text=True, encoding="utf-8", errors="replace")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("records:", result.stdout)
+
+    def test_finance_ledger_summarises(self):
+        script = GOLDEN / "ca-finance" / "4-engine" / "ledger.py"
+        result = subprocess.run(
+            [sys.executable, str(script), "summary", "--month", "2026-10"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("period 2026-10", result.stdout)
+        self.assertIn("net", result.stdout)
+
+    def test_finance_record_reads_before_writing(self):
+        # The ledger's own history: a script once opened the file for writing first
+        # and it came back empty. record() must append, never truncate.
+        with tempfile.TemporaryDirectory() as tmp:
+            domain = Path(tmp) / "ca-finance"
+            shutil.copytree(GOLDEN / "ca-finance", domain)
+            ledger = domain / "0-ledger" / "2026-10.csv"
+            before = ledger.read_text(encoding="utf-8").count("\n")
+            result = subprocess.run(
+                [sys.executable, str(domain / "4-engine" / "ledger.py"), "record",
+                 "--date", "2026-10-20", "--amount", "-9.99",
+                 "--category", "food", "--account", "account-b", "--note", "coffee"],
+                capture_output=True, text=True, encoding="utf-8", errors="replace")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(ledger.read_text(encoding="utf-8").count("\n"), before + 1)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,9 @@
+date,amount,category,account,note
+2026-10-01,-1200.00,housing,account-a,rent
+2026-10-02,-86.40,food,account-a,groceries
+2026-10-03,-12.50,food,account-b,lunch
+2026-10-05,-45.00,transport,account-a,monthly pass
+2026-10-08,3000.00,income,account-a,salary
+2026-10-09,-32.00,food,account-b,dinner with a friend
+2026-10-11,-19.90,utilities,account-a,phone
+2026-10-12,25.00,food,account-a,refund for the cancelled order
