@@ -1,0 +1,18 @@
+{
+  "harness": "dsh",
+  "tier": "T1",
+  "entry_file": "AGENTS.md",
+  "discovery": "directory-watch",
+  "install": [
+    {
+      "action": "link",
+      "from": "{workspace}/{domain}",
+      "to": "{workspace}/.dsh/skills/{domain}"
+    }
+  ],
+  "notes": [
+    "Domains are discovered from <workspace>/.dsh/skills/ and are picked up without a restart.",
+    "Use a link, never a copy: two copies of a SKILL.md means the one you edit is not the one that runs.",
+    "aw link --target dsh does this, and falls back to a junction on Windows so the link cannot silently become a copy."
+  ]
+}

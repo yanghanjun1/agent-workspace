@@ -1,0 +1,12 @@
+{
+  "harness": "plain",
+  "tier": "T2",
+  "entry_file": "AGENTS.md",
+  "discovery": "none",
+  "install": [],
+  "notes": [
+    "Any agent that can read a directory can use the workspace by path.",
+    "Without discovery, a manual is opened explicitly: point the agent at <domain>/SKILL.md.",
+    "Routing still works if the harness reads the identity file at session start; without that, the identity file is just a document you paste."
+  ]
+}

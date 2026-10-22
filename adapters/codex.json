@@ -1,0 +1,12 @@
+{
+  "harness": "codex",
+  "tier": "T1",
+  "entry_file": "AGENTS.md",
+  "discovery": "workspace-read",
+  "install": [],
+  "notes": [
+    "Start the agent with the workspace as the working directory: cd <workspace> && codex.",
+    "No registration is required for a workspace-local read: the agent opens AGENTS.md at session start and follows the paths in the routing table.",
+    "Global skill registration (declared marketplaces in the user config) is a different mechanism for skills that must be visible outside a workspace. This spec does not require it, and a workspace that needs it has coupled itself to one harness."
+  ]
+}

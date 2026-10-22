@@ -3,7 +3,33 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [SemVer](https://semver.org/). The spec and the tools version together.
 
-## [Unreleased]
+## [0.1.0] — 2026-10-23
+
+First draft. The spec is the part meant to outlive the tools.
 
 ### Added
-- Repository identity: license, ignore rules, line-ending policy.
+
+- `SPEC.md` — seven MUSTs (M0–M6), three SHOULDs, MAY patterns, conformance levels.
+- `WHY.md` — five failure scenes, the three layers that answer them, and the cost.
+- `PORTABILITY.md` — the mechanical portability criterion, three tiers, a rule
+  degradation table, and a measured matrix.
+- `tools/aw` — one entry point: `check`, `new`, `verify`, `link`. Standard library only.
+- `templates/` — identity file, domain skeleton, both axes, a working reporter.
+- `examples/golden/ca-reading/` — the golden fixture, i.e. a domain after a week of use.
+- `examples/inputs/` — ten needs in plain language, six of them Chinese.
+- `tests/` — 21 tests: every MUST can fail, and ten needs produce conforming workspaces.
+- CI on three operating systems and two Python versions, with no install step.
+
+### Decisions
+
+- **Identity is never generated.** It states who the assistant is and what it owns; an
+  agent writing its own job description writes one it likes. `aw new` refuses to run
+  outside a workspace for the same reason.
+- **M4 is split.** The entry format is machine-checked; "correct factual errors in place"
+  is not, and the spec says so instead of pretending.
+- **No shell scripts.** One Python entry point decides symlink vs junction, so the Windows
+  path cannot silently degrade into a copy — which is the failure that made the previous
+  attempt unusable on Git Bash.
+- **JSON adapters, not YAML.** A YAML parser would be the first dependency.
+
+[0.1.0]: https://github.com/yanghanjun0407/agent-workspace/releases/tag/v0.1.0
