@@ -41,7 +41,7 @@ are execution-layer choices. This is the layer a bot reads.
 ## Quickstart
 
 ```bash
-git clone https://github.com/yanghanjun0407/agent-workspace && cd agent-workspace
+git clone https://github.com/yanghanjun1/agent-workspace && cd agent-workspace
 
 mkdir -p ../my-workspace
 cp templates/AGENTS.md ../my-workspace/AGENTS.md     # the identity file: yours to write

@@ -48,4 +48,4 @@ First draft. The spec is the part meant to outlive the tools.
   attempt unusable on Git Bash.
 - **JSON adapters, not YAML.** A YAML parser would be the first dependency.
 
-[0.1.0]: https://github.com/yanghanjun0407/agent-workspace/releases/tag/v0.1.0
+[0.1.0]: https://github.com/yanghanjun1/agent-workspace/releases/tag/v0.1.0
