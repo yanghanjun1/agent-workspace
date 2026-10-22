@@ -1,67 +1,79 @@
-# 01 · 为什么助手会烂，以及三层怎么回答
+# 01 · Why assistants rot, and what three layers answer
 
-## 五个失效现场
+## Five failure scenes
 
-不是模型不行，是结构不行。每一条都能在一周内复现。
+Not model failures. Structural ones, each reproducible within a week.
 
-**1. 每天重新认识你。**
-开个对话，把背景讲一遍，聊几轮，关掉，明天再来一遍。没有任何东西跨会话存活，
-所以助手永远是新的。
+**1. It reintroduces itself every morning.**
+Open a chat, explain the context, talk, close it, repeat tomorrow. Nothing survives the
+session, so the assistant is permanently new.
 
-**2. 提示词越写越长，规则越来越不管用。**
-直觉做法是全塞进 system prompt。前两周有效。然后文件 800 行，其中三成规则被悄悄忽略，
-改一个字整个缓存前缀作废。表现出来是"模型变笨了"。
+**2. The prompt grows until the rules stop working.**
+The obvious fix is to put everything in the system prompt. It works for two weeks. Then
+the file is 800 lines, a third of the rules are quietly ignored, and changing one word
+invalidates the cached prefix. The symptom reads as "the model got worse".
 
-**3. 三个月后开始自相矛盾。**
-你问"为什么账期是 20 号"。没人知道。答案在七月的某次对话里。一条"发生了什么"的时间线
-回答不了"为什么是现在这样"，于是每次大改都要重新推导，两次推导互相打架。
+**3. Three months later it contradicts itself.**
+You ask why the accounting period starts on the 20th. Nobody knows; the answer was in a
+conversation in July. A single timeline of *what happened* cannot answer *why it is like
+this*, so every large change forces a re-derivation — and two re-derivations disagree.
 
-**4. 记错的事实永远活着。**
-所有记忆系统都说"只追加"。于是三月打错的一个数字，九月还在被引用，而没人敢动它，
-因为规则说历史不可改。日志最后保护的是自己的错误。
+**4. Wrong facts live forever.**
+Every memory system says *append-only*. So a mistyped number from March is still being
+used in September, and nobody dares touch it, because the rule says history is immutable.
+The log ends up protecting its own errors.
 
-**5. 换个工具，等于从零开始。**
-所有东西住在一个产品的会话库里。它改定价、换模型、改条款——八个月的上下文没了，
-因为它从来不是文件。
+**5. Switching tools means starting over.**
+Everything lived in one product's session store. It changes its pricing, its model, its
+terms — and eight months of context is gone, because it was never a file.
 
-## 三层
+## Three layers
 
 ```
-身份层   AGENTS.md        每轮注入，很小，只写路由
-   │  按你真正会说的词路由
+identity     AGENTS.md          small, injected every turn, writes only routes
+   │  routes by the words you actually use
    ▼
-手册层   ca-*/SKILL.md    按需加载，可以长，装操作和口径
-   │  干活时读写
+manuals      ca-*/SKILL.md      long, loaded on demand, holds procedures and rules
+   │  reads and writes
    ▼
-记忆层   事件日志 · 决策日志 · CURRENT.md
+memory       event log · decision log · CURRENT.md
 ```
 
-- **小的身份文件**回答 (2)。它是**预算定律**：每轮重发，所以只许放"每轮都必须成立"的东西。
-- **按需加载的手册**回答 (2) 的另一半，并让每个域有自己的口径，互不污染。
-- **两轴**回答 (1) 和 (3)。事件日志说发生了什么，决策日志说为什么变成这样；
-  只有后者能穿过一次重构。
-- **更正规则**回答 (4)。历史只追加，**事实除外**。
-- **一切是 git 里的文件**回答 (5)。工作区被 agent 打开，不被 agent 拥有。
+- **A small identity file** answers (2). It is a **budget law**: re-sent every turn, so it
+  may only hold what must be true every turn.
+- **Manuals loaded on demand** answer the other half of (2), and give each domain its own
+  conventions without cross-contamination.
+- **Two axes** answer (1) and (3). The event log says what happened; the decision log says
+  why it is the way it is. Only the second one survives a redesign.
+- **The correction rule** answers (4). History is append-only — *except for facts*.
+- **Everything is a file in a git repo** answers (5). A workspace is opened by an agent,
+  never owned by one.
 
-## 为什么域是插件而不是功能
+## Why a domain is a plugin, not a feature
 
-因为每个人的域不一样，同一个人不同时期的域也不一样。
+Because everyone's domains differ, and one person's domains differ across time.
 
-把域做成"目录 + 一份手册"，好处是：加一个域 = 加一个目录，不改骨架；域可以整删、
-整搬、整份送人；域的数据和域的规则住在一起。而骨架永远是干净的。
+A domain as "a directory plus one manual" means: adding a domain is adding a directory,
+with no change to the skeleton; a domain can be deleted, moved, or handed to someone else
+whole; a domain's data and its rules live together. And the skeleton stays clean.
 
-这也是为什么这个仓库只给骨架和生成器：**你的域是你的资产，别人的域对你没有价值。**
+This is why the repository ships a skeleton and a generator rather than a set of domains:
+**your domains are your asset, mine are worth nothing to you.**
 
-## 为什么不用向量库
+## Why no vector database
 
-假设：你的记忆规模在几百个文件、几十万字量级。
+The assumption is a memory of a few hundred files and a few hundred thousand words.
 
-这个量级下，"文件名 + 目录约定 + 每个域一份手册自己的索引"比向量检索更可靠，
-因为你能用 `grep` 一眼验证它读了什么。等真到几十万文件再上检索，别提前上。
+At that scale, "filename plus directory convention plus one index per manual" is more
+reliable than embedding retrieval, because you can `grep` it and see exactly what the
+assistant read. Reach for retrieval when you have hundreds of thousands of files, not
+before.
 
-## 代价（诚实说）
+## The cost, honestly
 
-- 身份文件你自己写一次。它是唯一不该由 agent 生成的产物。
-- 两条日志你得写。不写是默认选项，默认选项三周内退化成聊天窗口。
-- 生成的域要验收，不能只创建。
-- 它不更聪明，只是不那么健忘。不健忘已经解决大部分你以为是模型的问题。
+- You write the identity file once. It is the one artifact an agent must not generate.
+- You keep two logs. Not writing them is the default, and the default degrades back into a
+  chat window within three weeks.
+- A generated domain needs acceptance, not just creation.
+- It is not smarter, only less forgetful — and being less forgetful removes most of what
+  people blame on the model.

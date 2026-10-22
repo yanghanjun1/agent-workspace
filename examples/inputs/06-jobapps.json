@@ -1,6 +1,6 @@
 {
   "name": "ca-jobapps",
-  "need": "跟进每份投递到了哪一步、哪家该催了",
-  "words": "投简历 / 面试 / 二面 / offer / 催一下",
-  "lang": "zh"
+  "need": "track which stage each application reached and who needs a follow-up",
+  "words": "applied / interview / second round / offer / follow up",
+  "lang": "en"
 }

@@ -1,6 +1,6 @@
 {
   "name": "ca-sleep",
-  "need": "记录每晚睡多久、这周平均几点入睡",
-  "words": "睡眠 / 几点睡 / 睡了多久 / 早起",
-  "lang": "zh"
+  "need": "record how long I slept and what time I fell asleep this week",
+  "words": "sleep / bedtime / woke up / how long did I sleep / insomnia",
+  "lang": "en"
 }

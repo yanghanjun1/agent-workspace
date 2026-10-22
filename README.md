@@ -146,11 +146,11 @@ tier, and `PORTABILITY.md` says what breaks there and which rules degrade.
 SPEC.md          the normative text: M0-M6, S1-S3, MAY patterns
 WHY.md           five failure scenes, three layers, the cost
 PORTABILITY.md   the mechanical criterion, tiers, degradation, measured matrix
-templates/       the identity file and the domain skeleton
+templates/       the identity file and the domain skeleton (.zh.md variants for --lang zh)
 tools/aw         check · new · verify · link  (standard library only)
 examples/        golden fixture + ten input needs used by the tests
-docs/            long-form guides (Chinese; translation welcome)
-tests/           21 tests: every MUST can fail, and ten needs conform
+docs/            long-form guides: philosophy, layout, building a domain, memory, pitfalls
+tests/           22 tests: every MUST can fail, and ten needs conform
 ```
 
 ## Status

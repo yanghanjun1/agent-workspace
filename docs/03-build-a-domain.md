@@ -1,79 +1,86 @@
-# 03 · 怎么建一个域（让 agent 造，不是自己搓）
+# 03 · Build a domain (let the agent do it)
 
-域不该由人一个字一个字写。人只提供三样东西，剩下的交给生成器，然后验收。
+A domain should not be typed out by hand. You supply three things; the generator writes
+the rest; then you accept it.
 
-## 人提供三样
+## The three things you supply
 
-1. **这域管什么**（一句话）
-2. **你会怎么说它**（原话，越多越好：口语、简称、场景）
-3. **数据从哪来**（手输 / 手机投递 / 导入）
+1. **What it covers**, in one sentence.
+2. **How you actually talk about it** — your own words, including slang, abbreviations and
+   situations.
+3. **Where the data comes from** — typed by hand, pushed from a phone, imported.
 
-第 2 条最关键：它会变成 `description`。模型就是靠这句话决定要不要翻开手册。
+The second one matters most: it becomes the `description`, and the description is the only
+thing the model sees when it decides whether to open the manual.
 
-## 一条命令
+## One command
 
 ```bash
 python tools/aw new ca-coffee \
-  --need "记录每天喝什么、这周咖啡因多少" \
-  --words "咖啡/手冲/豆子/来一杯" \
-  --lang zh --workspace ~/my-workspace --yes --register
+  --need "record every cup and how much caffeine this week" \
+  --words "coffee/pour-over/beans/another one" \
+  --workspace ~/my-workspace --yes --register
 ```
 
-它会：
+What it does:
 
-1. 打印**回执**（要建哪些文件、域叫什么、description 草稿）——不加 `--yes` 就等你点头
-2. 生成 `SKILL.md`、两轴、`4-引擎/report.py`
-3. 写第一条决策记录：`域 ca-coffee 建立 · 因为你说「…」`
-4. 自己跑一遍 `aw check`；如果新域引入了违规，**删掉它**，不留半死目录
-5. `--register` 时把两行登记进 `AGENTS.md`（自动留 `.bak`）
+1. Prints a **receipt** — which files, which name, the draft description. Without `--yes`
+   it waits for you.
+2. Generates `SKILL.md`, both axes, and `4-engine/report.py`.
+3. Writes the first decision entry: `domain created · because the owner asked for: …`
+4. Runs `aw check` itself; if the new domain introduces violations it **removes it**,
+   rather than leaving a half-dead directory behind.
+5. With `--register`, inserts the two rows into `AGENTS.md` (keeping a `.bak`).
 
-不加 `--register` 就把这两行打给你，自己贴：
+Without `--register` it prints the rows for you to paste:
 
 ```markdown
-| ca-coffee | `ca-coffee/` | 喝什么/咖啡因 | `ca-coffee/SKILL.md` |
+| ca-coffee | `ca-coffee/` | coffee and caffeine | `ca-coffee/SKILL.md` |
 
-| 咖啡 / 手冲 / 豆子 / 来一杯 | `ca-coffee` |
+| coffee / pour-over / beans / another one | `ca-coffee` |
 ```
 
-**身份文件永远不由 agent 生成。** 它写的是"我是谁、谁归我"——让 agent 写自己的
-岗位说明书，它一定写一份自己满意的。`aw new` 在工作区外直接拒绝运行，同一个道理。
+**The identity file is never generated.** It states who the assistant is and what it owns
+— an agent writing its own job description writes one it likes. `aw new` refuses to run
+outside a workspace for exactly the same reason.
 
-## 然后必须验收（三问）
+## Then accept it (three questions)
 
 ```bash
 python tools/aw verify ca-coffee --harness "codex-cli 0.48.0"
 ```
 
-1. **路由**：用你平时的说法问一句 → agent 主动打开了这本手册吗？
-2. **算数**：让它报一个数 → 它跑了脚本，还是自己算的？
-3. **落笔**：让它记一条 → 事件日志和决策日志各多了一行吗？
+1. **Route** — say it the way you normally would. Did the agent open the manual on its own?
+2. **Compute** — ask for a number. Did it run the script, or do arithmetic itself?
+3. **Write** — ask it to record one item. Did both axes each gain a line?
 
-**三问不过，域不算建成。** 这只是个文件夹。答案会写进 `PORTABILITY.md` 的矩阵。
+**Until all three pass, the domain is not built.** It is a folder. The answers are written
+into the matrix in `PORTABILITY.md`.
 
-## 不通过怎么查
+## When it does not work
 
-| 症状 | 八成是 | 修 |
+| Symptom | Almost always | Fix |
 |---|---|---|
-| 完全不读手册 | `description` 用的是你的系统词，不是你说话的词 | 把口语塞进 description |
-| 读了但行为不对 | 手册里没有口径，或口径和身份文件冲突（M6） | 口径搬进手册，身份文件只留指针 |
-| 记完没落盘 | 手册没写"每次记完追加一块" | 补维护段 |
-| 报数字每次不一样 | 手册让它自己算（M5） | 指到 `4-引擎/` 的脚本 |
+| The manual is never opened | the `description` uses your system vocabulary, not your speech | put your own words in the description |
+| Opened, but behaviour is wrong | the manual has no conventions, or they contradict the identity file (M6) | move conventions into the manual; leave a pointer in the identity file |
+| Nothing was written down | the manual never says "append a block after each run" | add the maintenance section |
+| Numbers differ each time | the manual let the model compute (M5) | point it at a script under `4-engine/` |
 
-## 什么时候该拆成两个域
+## When to split one domain into two
 
-- 手册超过 150 行
-- 两件事的数据格式不一样
-- 你提到它们的词完全不重叠
+- the manual passes 150 lines
+- the two things store data differently
+- the words you use for them do not overlap at all
 
-反过来，两个域的词高度重叠（"今天怎么样"能指三个域），说明该合。
+Conversely, if one phrase ("how am I doing?") reaches three domains, they should be one.
 
-## 域死了怎么办
+## When a domain dies
 
-不要 `rm -rf`。
+Do not `rm -rf`.
 
-1. `mv ca-x ../archive/ca-x-<日期>`
-2. `AGENTS.md` 两张表里删掉那两行
-3. `.dsh/skills/` 里的链接删掉
-4. 在骨架的决策日志记一条：`域 ca-x 停用 · 因为 …`
+1. `mv ca-x ../archive/ca-x-<date>`
+2. delete its two rows from `AGENTS.md`
+3. delete the link from the skills directory, if you made one
+4. append one line to the skeleton's decision log: `domain ca-x retired · because …`
 
-**历史是资产，视线是稀缺品**——搬走，不是抹掉。
+**History is an asset; attention is scarce.** Move it, do not erase it.

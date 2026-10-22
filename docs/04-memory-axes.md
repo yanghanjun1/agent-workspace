@@ -1,94 +1,98 @@
-# 04 · 两轴记忆：事件日志与决策日志
+# 04 · Two axes: the event log and the decision log
 
-## 为什么是两条线
+## Why two lines
 
-一条时间线回答"我上周做了什么"，回答不了"这东西为什么是现在这样"。
+One timeline answers "what did I do last week". It never answers "why is it like this".
 
-三个月后你会问的，几乎都是第二种：
+The questions you ask three months later are almost all the second kind:
 
-- 为什么账期是 20 号而不是自然月？
-- 为什么这个域从云端搬回本地了？
-- 为什么待办不再直接读那份文件？
+- Why does the accounting period start on the 20th instead of the calendar month?
+- Why did this domain move from the cloud back to local?
+- Why does the task list no longer read that file directly?
 
-这些问题在九十条"今天干了什么"里翻不出来，在决策日志里一行就能找到。
-**所以两轴分开写，不是一个文件写两遍。**
+None of those are in ninety blocks of "what I did today". One line in the decision log
+answers each of them. **So the axes are separate documents, not one document written twice.**
 
 ```
-事件日志    ←→  时间轴：一天一块
-决策日志    ←→  对象轴：每个对象自己的演变史
+event log      ←→  time axis: one block per day
+decision log   ←→  object axis: each thing's own history
 ```
 
-## 事件日志
+## The event log
 
-块头日期 = **你干这活的那天**，不是事情发生的日子（事情日期写进正文）。
+The block date is **the day you did the work**, not the day the thing happened (put that
+in the body).
 
-固定五个字段，缺一个就不好读：
+Five fixed fields; drop one and it stops being readable:
 
 ```markdown
 ## 2026-10-21
-- 今天做了：
-- 产出物：（完整路径）
-- 卡点·待决：
-- 明天第一件事：
-- 交接·备份：（commit / 备份位置 / 怎么回滚）
+- did:
+- artifacts: (full paths)
+- blocked / open:
+- next:
+- handoff: (commit / backup / how to roll back)
 ```
 
-追加在顶部。四条判据：
+Newest on top. Four rules of thumb:
 
-| 情况 | 写法 |
+| Situation | How to write it |
 |---|---|
-| 只查了一下、没改东西 | 不写（别为填格子造块） |
-| 数据是 10.4 的，今天才入库 | 块头写今天，正文写「记账：10.4 三笔」 |
-| 改了机制/口径 | 事件日志写"做了什么"，决策日志写"变成什么样了" |
-| 同一天干了好几摊 | 一个块，分几行 |
+| You only looked something up, changed nothing | do not write a block (do not invent one to fill a grid) |
+| The data is from the 4th but entered today | block date is today, body says "entries for the 4th" |
+| You changed a convention | event log says what you did; decision log says what it became |
+| Several unrelated things in one day | one block, several lines |
 
-## 决策日志
+## The decision log
 
-一条一行，按对象分节，格式三截：
+One line per decision, grouped by object, three parts:
 
 ```
-日期 · 从「旧」→「新」· 因为 …
+date · from "old" to "new" · because …
 ```
 
 ```markdown
-## 记账口径
-- 2026-09-12 · 从「自然月」→「每月 20 号」· 因为工资 20 号发，自然月对不上现金流
+## Accounting period
+- 2026-09-12 · from "calendar month" to "the 20th" · because salary lands on the 20th and the calendar month does not match cash flow
 ```
 
-什么算"对象"：一条规则、一个机制、一个结构、一个决定。
+What counts as an object: a rule, a mechanism, a structure, a decision.
 
-判据：**下次有人问"为什么是这样"，这条能不能一句话答上来。**
-
----
-
-## 🔴 只追加，但事实除外
-
-这是整套方法里最稀缺的一条，也是几乎所有记忆系统搞错的地方。
-
-**历史层**（两轴）只追加：判断被推翻也别改原文，加一条新的。
-**活表**（`CURRENT.md` 的 OPEN_LOOPS、各域当前状态）只留活的：做完的搬去归档。
-
-**但"只追加"只保护历史事实，不保护错误。**
-
-记错了数字、写错了路径、说反了事实——**直接改对**，然后在决策日志记一条
-「更正：X → Y，原因」。
-
-判据只有一个：
-
-> **这条留着，以后会不会让我基于错的东西做事？**
-
-会 → 改。不会 → 只追加。
-
-一个保护自己错误的日志，三周后就不再有人信任它。
+The test: **if someone asks "why is it like this", can this line answer in one sentence?**
 
 ---
 
-## 反模式
+## 🔴 Append-only, except for facts
 
-| 反模式 | 后果 |
+This is the rarest rule in the whole method, and the one almost every memory system gets
+wrong.
+
+**History layers** (both axes) are append-only: if a judgement is overturned, do not edit
+the original — add a new line.
+**Live tables** (`CURRENT.md` OPEN_LOOPS, per-domain state) keep only what is live: move
+finished items to an archive.
+
+**But "append-only" protects historical facts, not errors.**
+
+A mistyped number, a wrong path, a reversed fact — **fix it in place**, then record one
+correction line in the decision log: `correction: X to Y, because …`.
+
+One test decides it:
+
+> **If I leave this, will I later act on something false?**
+
+Yes → fix it. No → append.
+
+A log that protects its own errors stops being trusted within three weeks.
+
+---
+
+## Anti-patterns
+
+| Anti-pattern | Consequence |
 |---|---|
-| 事件日志写成日记（"今天心情不错"） | 三个月后全是噪音，找不到干了什么 |
-| 决策日志写成 changelog（按日期罗列） | 变成第二条时间线，失去对象轴的意义 |
-| 结案的 OPEN_LOOPS 堆在表里 | 活项被死项淹没，同一批次出现互相矛盾的两行 |
-| 只写事件不写决策 | 每次大改都要重新推导一遍当初为什么 |
-| 只在对话里说，不落文件 | 会话一关，等于没发生 |
+| The event log becomes a diary ("felt good today") | three months of noise, and you cannot find what you did |
+| The decision log becomes a changelog (grouped by date) | a second timeline; the object axis is lost |
+| Closed loops pile up in OPEN_LOOPS | live items drown, and two contradictory rows appear in one batch |
+| Events without decisions | every large change re-derives the reasoning from scratch |
+| Only saying it in the conversation | closing the session equals it never happening |

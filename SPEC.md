@@ -1,6 +1,6 @@
 # SPEC.md — Workspace Conformance
 
-**Status:** draft 0.1 · normative text is English; long-form guides under `docs/` are Chinese.
+**Status:** draft 0.1.
 
 The key words MUST, MUST NOT, SHOULD and MAY are used as in RFC 2119.
 

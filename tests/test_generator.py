@@ -80,6 +80,23 @@ class TestGeneratorConformance(unittest.TestCase):
             self.assertIn("Use when", text)
 
 
+class TestLocales(unittest.TestCase):
+    def test_chinese_locale_conforms(self):
+        # The spec is language-neutral (filenames and headings are an implementation
+        # choice), so the locale path needs its own proof rather than an assumption.
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = seed_workspace(Path(tmp), "zh")
+            with contextlib.redirect_stdout(io.StringIO()):
+                code = new_domain.main([
+                    "ca-duzhe", "--need", "记录这周读了什么、读到哪了",
+                    "--words", "读书/看书/读到哪了", "--lang", "zh",
+                    "--workspace", str(ws), "--yes",
+                ])
+            self.assertEqual(code, 0)
+            self.assertEqual(failures(ws), [])
+            self.assertTrue((ws / "ca-duzhe" / "流水.md").is_file())
+
+
 class TestGoldenFixture(unittest.TestCase):
     def test_golden_domain_conforms_inside_a_workspace(self):
         with tempfile.TemporaryDirectory() as tmp:

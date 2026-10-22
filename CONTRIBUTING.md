@@ -8,12 +8,13 @@ This repository does one thing: it makes a method copyable. The bar is narrow on
   in a way that punishes a legitimate workspace. `SPEC.md` is the artifact that should
   outlive everything else here.
 - **Example inputs.** `examples/inputs/` holds needs in plain language. A new one is a
-  new proof that the generator generalizes; six of the ten are Chinese and that ratio is
-  not an accident.
+  new proof that the generator generalizes. Non-English inputs are welcome as locale
+  coverage — add them with `--lang` and a test, not only as a file.
 - **Portability rows.** A row in `PORTABILITY.md` needs a harness, a version, and a date.
   A failing row is worth more than a passing one.
-- **Translations.** The normative text is English; `docs/` is Chinese. English versions
-  of the guides, or a third language, are welcome.
+- **Translations.** The repository is English. The `--lang` flag and the `.zh.md` templates
+  exist because a workspace's filenames and headings are an implementation choice, not a
+  spec requirement. A third locale follows the same pattern.
 - **Bug fixes** in `tools/` — encoding, paths, Windows behaviour. These are the bugs
   users actually hit.
 

@@ -1,75 +1,81 @@
-# 02 · 目录约定
+# 02 · Layout
 
-## 工作区 ≠ 域
+## A workspace is not a domain
 
-这是最容易搞错、代价最大的一条（M0）。
+This is the easiest thing to get wrong and the most expensive (M0).
 
 ```
-<工作区>/                 ← 仓根 = 工作区根，有且只有一份 AGENTS.md
-├── AGENTS.md             ← 身份文件：路由表在这儿
-├── CURRENT.md            ← 活待办（唯一源）
-├── _scratch/             ← 一次性产物（.gitignore）
-└── ca-<域>/              ← 域：手册 + 两轴 + 数据 + 脚本
+<workspace>/              ← repo root = workspace root, exactly one AGENTS.md
+├── AGENTS.md             ← identity: the routing table lives here
+├── CURRENT.md            ← open work (single source)
+├── _scratch/             ← throwaway artifacts (.gitignore)
+└── ca-<domain>/          ← a domain: manual + two axes + data + scripts
 ```
 
-**域不能当工作区。** 三个理由：
+**A domain cannot be a workspace.** Three reasons:
 
-| 工作区有 | 域没有 |
+| A workspace has | A domain has |
 |---|---|
-| 路由表（什么话 → 哪本手册） | 只有一本手册，没有"选择"可做 |
-| `CURRENT.md` | 跨域任务无处安放 |
-| "谁归我"的边界 | agent 会在域里发明别的域的活 |
+| a routing table (words → manual) | one manual, and no choice to make |
+| `CURRENT.md` | nowhere to put cross-domain work |
+| an ownership boundary | an agent that invents other domains' work |
 
-更根本的理由是生命周期：**域会死，工作区只会迁移。** 域不用了就 `mv` 去归档，
-从身份文件里删两行；工作区是根，只能搬，不能归档。两个生命周期不同的东西不能同层。
+The structural reason is lifecycle: **domains die, workspaces migrate.** A domain that
+stops being used is `mv`-ed to an archive and two rows come out of the identity file. A
+workspace is the root — it is moved, never archived. Two objects with different lifecycles
+cannot sit at the same level.
 
-所以也别把工作区塞进别人的工作区里——那会得到两份身份文件、两个待办源、一个嵌套仓，
-路由立刻有歧义。**换 agent 是换启动器，不是搬家。**
+So do not put a workspace inside another workspace either: that yields two identity files,
+two task files and a nested repository, and routing becomes ambiguous immediately.
+**Switching agents means switching launchers, not moving house.**
 
-## 一个域内部
+## Inside a domain
 
 ```
-ca-<域>/
-├── SKILL.md          ← 手册（必须有；frontmatter 里 name + description）
-├── log.md            ← 事件轴（中文名可用 流水.md）
-├── decisions.md      ← 对象轴（中文名可用 维护日志.md）
-├── 0-raw/            ← 原始输入（一般 .gitignore）
-├── 1-data/           ← 结构化数据（csv/jsonl/md）
-└── 4-engine/         ← 这个域自己的脚本
+ca-<domain>/
+├── SKILL.md          ← the manual (required; frontmatter has name + description)
+├── log.md            ← event axis
+├── decisions.md      ← object axis
+├── 0-raw/            ← raw inputs (usually .gitignore'd)
+├── 1-data/           ← structured data (csv/jsonl/md)
+└── 4-engine/         ← this domain's scripts
 ```
 
-带序号的目录不是洁癖，是为了**排序即语义**：原料在最前，脚本在最后。
-文件名用英文或中文都合规——规范管语义，实现管命名。
+The numeric prefixes are not fussiness: **sorting is semantics.** Raw material first,
+scripts last. Filenames may be English or any other language — the spec governs meaning,
+the implementation governs naming.
 
-## 东西放哪
+## Where things go
 
-| 东西 | 去哪 |
+| Thing | Where |
 |---|---|
-| 一次性脚本 / 中间数据 / 调试输出 | `_scratch/`，交付时说"可清" |
-| 域的真实数据 | 该域 `1-data/` |
-| 域的原始输入 | 该域 `0-raw/`（含个人信息的优先不进 git） |
-| 口径 / 规则 / 操作 | 该域 `SKILL.md`，**不进** `AGENTS.md` |
-| 密钥 / token / 会话库 | 环境变量或本机凭据库，**永不进 git** |
+| one-off scripts, intermediate data, debug output | `_scratch/`, and say "discardable" at delivery |
+| a domain's real data | that domain's `1-data/` |
+| a domain's raw input | that domain's `0-raw/` (personal data stays out of git) |
+| conventions, rules, procedures | that domain's `SKILL.md`, **not** `AGENTS.md` |
+| keys, tokens, session stores | environment or the OS keychain, **never** git |
 
-## 数据进不进 git
+## Does data belong in git?
 
-判据只有一条：**泄露了会不会伤人？**
+One criterion: **would leaking it hurt someone?**
 
-- 会（健康、财务、身份、聊天记录）→ `.gitignore`，或单独私有仓
-- 不会（脚本、模板、通用知识）→ 进 git
+- Yes (health, money, identity, chat logs) → `.gitignore` it, or use a separate private repo
+- No (scripts, templates, general knowledge) → commit it
 
-但"不进 git"不等于"不备份"：本地仓 + 私有远端，两回事。
+But "not in git" is not "not backed up": a local repo plus a private remote is a different
+question.
 
-## CURRENT.md 长什么样
+## What CURRENT.md looks like
 
 ```markdown
 # CURRENT.md
 
-## 节点状态
-- 2026-10-21 · <一句话描述当时的处境>
+## State
+- 2026-10-21 · <one line describing where things stand>
 
 ## OPEN_LOOPS
-- [ ] <可执行的下一步> · 域 · 何时开始
+- [ ] <an actionable next step> · <domain> · <when>
 ```
 
-两条纪律：**只留活的**（做完的搬去归档，不删但不占表）、**一行一件事**。
+Two disciplines: **keep only what is live** (finished items move to an archive — not
+deleted, just not in the table), and **one line per item**.

@@ -16,8 +16,8 @@ First draft. The spec is the part meant to outlive the tools.
 - `tools/aw` — one entry point: `check`, `new`, `verify`, `link`. Standard library only.
 - `templates/` — identity file, domain skeleton, both axes, a working reporter.
 - `examples/golden/ca-reading/` — the golden fixture, i.e. a domain after a week of use.
-- `examples/inputs/` — ten needs in plain language, six of them Chinese.
-- `tests/` — 21 tests: every MUST can fail, and ten needs produce conforming workspaces.
+- `examples/inputs/` — ten needs in plain language.
+- `tests/` — 22 tests: every MUST can fail, and ten needs produce conforming workspaces.
 - CI on three operating systems and two Python versions, with no install step.
 
 ### Decisions

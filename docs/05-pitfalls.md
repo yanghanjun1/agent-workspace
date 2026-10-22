@@ -1,79 +1,97 @@
-# 05 · 踩过的坑
+# 05 · Pitfalls
 
-按"最容易犯"排序。每一条都真实发生过。
+Ordered by how often they happen. Every one of these actually did.
 
-## 1. 技能建了但助手不用
+## 1. The manual is built, and the agent never opens it
 
-**症状**：问相关的事，助手完全不读那本手册。
-**原因**：`description` 写成了"它是什么"（`咖啡域运维手册`），而不是"什么时候用它"。
-**修**：把你会说的词塞进去，包括口语、简称、场景（`Use when 提咖啡/手冲/来一杯/这周咖啡因`）。
-**排查顺序**：description → 手册在不在工作区 → 身份文件里登记了没。
+**Symptom:** you ask something related and it does not read the manual.
+**Cause:** the `description` says what the domain *is* ("coffee domain operations manual")
+instead of *when to use it*.
+**Fix:** put your own words in it — slang, abbreviations, situations
+(`Use when the user mentions coffee/pour-over/another one/caffeine this week`).
+**Check order:** description → is the manual inside the workspace → is it registered in the
+identity file.
 
-## 2. 复制而不是链接
+## 2. Copy instead of link
 
-**症状**：改了 `ca-x/SKILL.md`，行为没变。
-**原因**：技能目录里是副本。两份文件，改的那份不是生效的那份。
-**修**：删副本，用链接。`aw link --target dsh` 会处理 Windows 的 junction 回退。
-Windows 的 Git Bash 里 `ln -s` 默认**不是**符号链接，会静默变成复制——这是最容易踩的一脚。
+**Symptom:** you edit `ca-x/SKILL.md` and nothing changes.
+**Cause:** the skills directory holds a copy. Two files, and you edited the one that does
+not run.
+**Fix:** delete the copy, use a link. `aw link --target dsh` handles the Windows junction
+fallback. Note that `ln -s` in Git Bash on Windows is **not** a symlink by default — it
+silently copies, which is the easiest way to step on this.
 
-## 3. 工作区套工作区
+## 3. A workspace inside a workspace
 
-**症状**：路由时好时坏，两个 `CURRENT.md` 互相覆盖，git 里出现嵌套仓。
-**原因**：把整个工作区搬进了另一个工具的工作目录。
-**修**：一个 cwd 只许有一份身份文件（M0）。换 agent 是 `cd` 到工作区再启动，
-不是把工作区拷过去。`aw check` 会沿父目录往上找身份文件，找到就报错。
+**Symptom:** routing works sometimes; two `CURRENT.md` files overwrite each other; git shows
+a nested repository.
+**Cause:** the whole workspace was moved into another tool's working directory.
+**Fix:** one identity file per working directory (M0). Switching agents means `cd` into the
+workspace and starting the agent there — not copying the workspace over. `aw check` walks
+the parent chain and reports the first ancestor that also holds an identity file.
 
-## 4. 身份文件膨胀
+## 4. The identity file grows
 
-**症状**：助手开始忘规矩；改一下很贵。
-**原因**：手册、SOP、历史全写进身份文件了。
-**判据**：超过 200 行就该拆（M1）。内容分两堆："路由/边界/触发语"留下，"怎么做"搬进手册。
+**Symptom:** rules start being missed; editing it is expensive.
+**Cause:** procedures, SOPs and history were written into it.
+**Test:** past 200 lines it needs splitting (M1). Two piles: keep routing, boundaries and
+per-turn triggers; move "how to do it" into a manual.
 
-## 5. 同一件事写在两个地方
+## 5. The same thing written in two places
 
-**症状**：两份文档对同一口径说法不一样，助手按哪份都可能错。
-**典型**：`AGENTS.md` 和 `SKILL.md` 都写了"账期是 20 号"，后来只改了一处。
-**修**：每类事实指定唯一源，其他地方只放指针（M6，`aw check` 会比对逐行重复）。
+**Symptom:** two documents disagree about one convention, and either could be the one the
+agent read.
+**Typical:** both `AGENTS.md` and `SKILL.md` state "the period starts on the 20th"; later
+only one is updated.
+**Fix:** one source per fact, pointers elsewhere (M6 — `aw check` compares lines and reports
+verbatim duplication).
 
-## 6. 一上来就建六个域
+## 6. Six domains on day one
 
-**症状**：六个域全部半死，每个只有一份手册和两条记录。
-**原因**：域的数量不等于价值，每个域都要持续喂数据、写两轴。
-**建议**：先跑一个域一个月。跑通一个，你就知道第二个该长什么样。
+**Symptom:** all six are half-dead, each with one manual and two records.
+**Cause:** the number of domains is not the value; each one needs data, both axes and upkeep.
+**Advice:** run one domain for a month. Once one works, you know what the second should look
+like.
 
-## 7. 生成的域没验收
+## 7. A generated domain that was never accepted
 
-**症状**：文件都在，`aw check` 全绿，但真问的时候它不干活。
-**原因**：检查器只证明结构对，不证明行为对。这是 M4b 之外第二个机器验不了的东西。
-**修**：`aw verify` 三问：路由 / 算数 / 落笔。不过就是文件夹。
+**Symptom:** the files exist, `aw check` is green, and it still does nothing when you ask.
+**Cause:** the checker proves structure, not behaviour. This is the second thing a machine
+cannot verify, next to M4b.
+**Fix:** `aw verify` — route, compute, write. Failing any of them means it is a folder.
 
-## 8. 让模型算数
+## 8. Letting the model do arithmetic
 
-**症状**：账目对不上，每次重新问结果不同。
-**原因**：把计算交给了语言模型。
-**修**：计算落到脚本（M5），模型只负责理解和解释。`aw new` 默认就给你一个能跑的 `report.py`。
+**Symptom:** totals do not add up, and asking twice gives two answers.
+**Cause:** computation was handed to a language model.
+**Fix:** computation in a script (M5); the model understands and explains. `aw new` ships a
+working `report.py` so there is no excuse.
 
-## 9. 大改之前没有回滚点
+## 9. No rollback point before a big change
 
-**症状**：改崩了，不知道回哪去。
-**修**：规则类文件改动前先 commit；大重构另开分支或另起目录试。
-**"能另起实验文件就不许改本体"** —— 这条比任何备份都省事。
+**Symptom:** it breaks, and there is nowhere to go back to.
+**Fix:** commit before editing rule-like files; prototype a big refactor in a branch or a
+separate directory. **"If you can start a scratch file, you may not edit the original"** —
+cheaper than any backup.
 
-## 10. `_scratch/` 变成垃圾场
+## 10. `_scratch/` becomes a landfill
 
-**症状**：半年后 3GB 临时脚本，不敢删。
-**修**：交付时说清"可弃"还是"点名"，可弃的当场删。
-**不删的代价不是磁盘，是你以后不敢动任何文件。**
+**Symptom:** 3 GB of one-off scripts six months later, and nobody dares delete them.
+**Fix:** at delivery, say which artifacts are discardable and which are named; delete the
+discardable ones on the spot. **The cost is not disk, it is that you stop touching files.**
 
-## 11. 开源时泄露历史
+## 11. Leaking history when open-sourcing
 
-**症状**：把私有仓改成公开，或者"删掉敏感文件再 push"。
-**为什么必炸**：`git rm` 之后文件仍在历史里，`git log -p` 就能看到。删工作区文件 ≠ 删历史。
-**正确做法**：新建目录、`git init` 一个新仓，只拷洗过的文件过去；原仓继续私有。
-发布前跑 `gitleaks detect`，再自己过一遍 `git log --stat`。
+**Symptom:** making a private repo public, or "deleting the sensitive files, then pushing".
+**Why it always fails:** after `git rm` the file is still in history; `git log -p` shows it.
+Deleting a working-tree file is not deleting history.
+**Do this instead:** create a new directory, `git init` a fresh repository, copy only the
+cleaned files. The original stays private and untouched. Run `gitleaks detect` and read
+`git log --stat` yourself before publishing.
 
-## 12. 把会话当记忆
+## 12. Treating the conversation as memory
 
-**症状**：关掉会话，等于没发生。
-**修**：任何"以后还会用到"的结论，当场落文件：口径进手册、事实进数据、决定进决策日志、
-待办进 `CURRENT.md`。**首要注意力载体是文件，不是聊天记录。**
+**Symptom:** closing the session equals it never happened.
+**Fix:** anything that will matter later is written down at the time: conventions into the
+manual, facts into the data, decisions into the decision log, next steps into `CURRENT.md`.
+**The primary carrier of attention is a file, not a chat log.**
