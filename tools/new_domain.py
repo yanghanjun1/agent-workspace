@@ -42,6 +42,16 @@ def fill(text: str, values: dict[str, str]) -> str:
     return text
 
 
+def oneline(value: str) -> str:
+    """Collapse to a single line.
+
+    Everything the owner types ends up in a file an agent will read: the description in
+    frontmatter, the first event block, the first decision entry. A newline in an input
+    could add a frontmatter key or forge a decision-log entry, so inputs never carry one.
+    """
+    return " ".join(str(value).split())
+
+
 def describe(lang: str, words: str, need: str) -> str:
     if lang == "zh":
         return f"Use when 主人提{words}，或要{need}。"
@@ -165,6 +175,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--register", action="store_true", help="add the two rows to the identity file")
     args = parser.parse_args(argv)
 
+    # Everything below ends up in a file an agent reads, so it never carries a newline.
+    need, words, date = oneline(args.need), oneline(args.words), oneline(args.date)
+
     ws = Path(args.workspace).expanduser().resolve()
     if not (ws / IDENTITY).is_file():
         print(f"not a workspace: {ws} has no {IDENTITY}. A domain is not a workspace (M0).")
@@ -178,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{name} already exists")
         return 2
 
-    job = plan(name, args.need, args.words, args.lang, args.date)
+    job = plan(name, need, words, args.lang, date)
 
     print("plan")
     print(f"  workspace:   {ws}")

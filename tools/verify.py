@@ -29,6 +29,15 @@ MATRIX_HEADER = ("| date | harness | domain | route | compute | write | verdict 
                  "|---|---|---|---|---|---|---|")
 
 
+def cell(value: str) -> str:
+    """One markdown table cell: no newline, no unescaped pipe.
+
+    The value lands in PORTABILITY.md, which people paste from; a pipe would silently
+    split the row and a newline would forge a second one.
+    """
+    return " ".join(str(value).split()).replace("|", "\\|")
+
+
 def ask(answers: str | None) -> list[str]:
     if answers:
         given = [a.strip().lower() for a in answers.split(",")]
@@ -56,7 +65,8 @@ def main(argv: list[str] | None = None) -> int:
     verdict = "accepted" if passed else "not accepted"
 
     cells = " | ".join("yes" if r == "y" else "no" for r in results)
-    row = f"| {args.date} | {args.harness} | {args.domain} | {cells} | {verdict} |"
+    row = (f"| {cell(args.date)} | {cell(args.harness)} | {cell(args.domain)} "
+           f"| {cells} | {verdict} |")
     print()
     print(row)
 

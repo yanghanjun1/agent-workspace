@@ -5,7 +5,18 @@ Versioning: [SemVer](https://semver.org/). The spec and the tools version togeth
 
 ## [Unreleased]
 
+### Fixed
+- Newline injection through `aw new --need/--words`: both were interpolated into the
+  `description:` line and the first log entries, so a newline could add a frontmatter key
+  or forge a decision-log entry. Inputs are collapsed to one line, with a test.
+- Markdown table injection through `aw verify --harness`: a pipe or newline broke the
+  portability row. Cells are escaped, with a test.
+
 ### Added
+- `SECURITY.md` — what the tools touch, why link removal is the sharpest edge, and the
+  instruction-surface problem: a workspace is a set of files an agent obeys, so adopting
+  someone else's workspace is prompt injection by design. `aw check` verifies structure,
+  not intent, and the page says so.
 - `SETUP.md` — setup with an agent: a copy-paste prompt that ends at `aw check` instead
   of at "done!", what the agent may touch, the four ways it goes wrong, and how to undo.
 - `README.md` — setup split into "manually" and "with an agent", with the bootstrap

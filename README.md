@@ -186,6 +186,7 @@ SPEC.md          the normative text: M0-M6, S1-S3, MAY patterns
 WHY.md           five failure scenes, three layers, the cost
 SETUP.md         setup with an agent: the prompt, what it may touch, how it fails
 PORTABILITY.md   the mechanical criterion, tiers, degradation, measured matrix
+SECURITY.md      attack surface, the instruction-surface problem, how to report
 templates/       the identity file and the domain skeleton (.zh.md variants for --lang zh)
 tools/aw         check · new · verify · link  (standard library only)
 examples/        golden fixtures (reading, finance, review) + ten input needs
