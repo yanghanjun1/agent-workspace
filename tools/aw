@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""aw - the workspace tool. One entry point, standard library only.
+
+    aw check [path]          check a workspace against SPEC.md
+    aw new <domain>          generate a domain, then check it
+    aw verify <domain>       the three acceptance questions
+    aw link --target <name>  wire the workspace into a harness
+
+Run `aw <command> --help` for the flags of one command.
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="aw",
+        description="Workspace tool: check conformance, generate domains.",
+        epilog="Spec: SPEC.md. Rationale: WHY.md.",
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    check = sub.add_parser("check", help="check a workspace against SPEC.md")
+    check.add_argument("path", nargs="?", default=".")
+    check.add_argument("--prefix", default="ca-", help="domain directory prefix (default: ca-)")
+    check.add_argument("--json", action="store_true", help="machine-readable output")
+
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+
+    if args.command == "check":
+        import check
+        return check.main(args.path, args.prefix, args.json)
+
+    return 2
+
+
+if __name__ == "__main__":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+    raise SystemExit(main())
