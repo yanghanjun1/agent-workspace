@@ -38,7 +38,12 @@ are execution-layer choices. This is the layer a bot reads.
 
 ---
 
-## Quickstart
+## Setup
+
+Two ways in. Both end at the same check, and neither leaves the workspace depending on
+which agent you used.
+
+### Manually
 
 ```bash
 git clone https://github.com/yanghanjun1/agent-workspace && cd agent-workspace
@@ -65,7 +70,41 @@ domains:   1
 conforming.
 ```
 
-Then open the workspace with whatever agent you use:
+### With an agent
+
+If you would rather not type the commands, paste this into whatever agent you already
+use. It is a **one-time bootstrap**: it writes files and exits. Nothing in the workspace
+records which agent ran it, and nothing afterwards depends on that choice — which is why
+the prompt ends at a check rather than at "done!".
+
+```text
+Set up an agent workspace for me from the agent-workspace repository.
+
+1. Read SPEC.md and docs/03-build-a-domain.md in that repository. Follow them.
+   Do not summarize them back to me.
+2. Ask me which directory to use as the workspace. Create nothing yet.
+3. Tell me what you will create, where, and how I undo it. Wait for my yes.
+4. Copy templates/AGENTS.md into that directory as AGENTS.md. Then interview me for
+   the three things you cannot know, and fill the file in from my answers only:
+     - what my first domain covers
+     - the words I actually use when I talk about it
+     - where that domain's data will come from
+5. Run:
+   python <path-to-repo>/tools/aw new <name> --need "<my answer>" \
+     --words "<my words>" --workspace <dir> --yes --register
+6. Run: python <path-to-repo>/tools/aw check <dir>
+   If it fails, show me the failures and stop. Do not edit the spec to make it pass.
+7. Ask me the three acceptance questions one at a time, then record my answers with:
+   python <path-to-repo>/tools/aw verify <name> --harness "<your name and version>"
+8. Report what exists, what passed, what failed, and what you did not do.
+
+Do not create a second domain. Do not write outside the workspace directory.
+```
+
+`SETUP.md` has the long version: what the agent may touch, the four ways this goes
+wrong, and how to undo it.
+
+### Open it
 
 ```bash
 cd ../my-workspace && codex      # or dsh, or claude, or anything that reads a directory
@@ -145,12 +184,13 @@ tier, and `PORTABILITY.md` says what breaks there and which rules degrade.
 ```
 SPEC.md          the normative text: M0-M6, S1-S3, MAY patterns
 WHY.md           five failure scenes, three layers, the cost
+SETUP.md         setup with an agent: the prompt, what it may touch, how it fails
 PORTABILITY.md   the mechanical criterion, tiers, degradation, measured matrix
 templates/       the identity file and the domain skeleton (.zh.md variants for --lang zh)
 tools/aw         check · new · verify · link  (standard library only)
-examples/        golden fixtures (reading, finance) + ten input needs used by the tests
+examples/        golden fixtures (reading, finance, review) + ten input needs
 docs/            long-form guides: philosophy, layout, building a domain, memory, pitfalls, case study
-tests/           22 tests: every MUST can fail, and ten needs conform
+tests/           24 tests: every MUST can fail, and ten needs conform
 ```
 
 ## Status

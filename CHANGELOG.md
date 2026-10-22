@@ -6,6 +6,10 @@ Versioning: [SemVer](https://semver.org/). The spec and the tools version togeth
 ## [Unreleased]
 
 ### Added
+- `SETUP.md` — setup with an agent: a copy-paste prompt that ends at `aw check` instead
+  of at "done!", what the agent may touch, the four ways it goes wrong, and how to undo.
+- `README.md` — setup split into "manually" and "with an agent", with the bootstrap
+  prompt inline.
 - `examples/golden/ca-review/` — a domain whose output is a judgement rather than a
   record: blind passes, the disagreement kept, one dated verdict. The third domain shape,
   and the one `CONTRIBUTING.md` had been asking for.
