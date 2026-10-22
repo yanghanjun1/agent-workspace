@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Scratch: one place for throwaway scripts, intermediate data, debug output.
+_scratch/
+
+# Private data: raw inputs and dumps never belong in a shared repo.
+ca-*/0-原料/
+ca-*/0-raw/
+*.xlsx
+*.db
+*.sqlite*
+*.pem
+*.key
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
