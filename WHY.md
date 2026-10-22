@@ -29,6 +29,23 @@ model, or its terms — and eight months of context is gone, because it was neve
 
 ---
 
+## Two complaints, three rules
+
+This usually gets stated as "the agent hallucinates and loses the thread in long
+sessions". That is three separate problems, and they have three structural answers:
+
+| The complaint | What it actually is | The rule |
+|---|---|---|
+| It makes things up | a model producing numbers it never computed | **M5**, and **M4b** once a wrong number is already written down |
+| It loses the middle of a session | rules competing for a fixed context budget | **M1**, plus manuals loaded on demand instead of injected |
+| I cannot move it to another tool | the working state lives inside a vendor | **M0**, and the portability criterion |
+
+None of them is fixed by a better prompt. All three are fixed by moving the thing out of
+the conversation and into a file, with a rule attached to it. The specific failures that
+produced each rule are recorded in `docs/06-case-study.md`.
+
+---
+
 ## The three layers
 
 ```

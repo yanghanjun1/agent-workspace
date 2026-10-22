@@ -3,6 +3,15 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [SemVer](https://semver.org/). The spec and the tools version together.
 
+## [Unreleased]
+
+### Added
+- `docs/06-case-study.md` — eight months, six domains, and the failures that produced
+  each rule. The provenance of the spec, which is the one thing a reader cannot get from
+  the spec itself.
+- `WHY.md` — "two complaints, three rules": hallucination and context loss mapped to the
+  rules that answer them.
+
 ## [0.1.0] — 2026-10-23
 
 First draft. The spec is the part meant to outlive the tools.
