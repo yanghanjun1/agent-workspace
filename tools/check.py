@@ -40,7 +40,7 @@ SECRET_PATTERNS = (
 
 ROUTING_HEADERS = ("说什么", "读", "words", "say", "trigger", "route", "task", "任务")
 COMPUTE_WORDS = re.compile(r"统计|汇总|对账|求和|周报|月报|report|summary|total|reconcile|aggregate", re.I)
-SCRIPT_REF = re.compile(r"([\w./\\\-\u4e00-\u9fff]+\.(?:py|sh|js|ps1|bash))")
+SCRIPT_REF = re.compile(r"([\w./\\\-\u4e00-\u9fff]+\.(?:py|sh|js|ps1|bash))(?![A-Za-z0-9])")
 CJK = re.compile(r"[\u4e00-\u9fff]")
 
 

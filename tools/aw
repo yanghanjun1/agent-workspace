@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="aw",
-        description="Workspace tool: check conformance, generate domains.",
+        description="Workspace tool: check conformance, generate domains, verify them.",
         epilog="Spec: SPEC.md. Rationale: WHY.md.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
@@ -31,12 +31,23 @@ def build_parser() -> argparse.ArgumentParser:
     check.add_argument("--prefix", default="ca-", help="domain directory prefix (default: ca-)")
     check.add_argument("--json", action="store_true", help="machine-readable output")
 
+    sub.add_parser("new", help="generate a domain (see: aw new --help)")
+    sub.add_parser("verify", help="the three acceptance questions")
+    sub.add_parser("link", help="wire the workspace into a harness")
+
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    argv = list(sys.argv[1:] if argv is None else argv)
 
+    # Sub-commands own their flags, so hand the tail straight to the module.
+    if argv and argv[0] in ("new", "verify", "link"):
+        command, rest = argv[0], argv[1:]
+        module = {"new": "new_domain", "verify": "verify", "link": "link"}[command]
+        return __import__(module).main(rest)
+
+    args = build_parser().parse_args(argv)
     if args.command == "check":
         import check
         return check.main(args.path, args.prefix, args.json)
