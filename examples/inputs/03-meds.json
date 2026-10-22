@@ -1,0 +1,6 @@
+{
+  "name": "ca-meds",
+  "need": "track doses and remind me when a refill is due",
+  "words": "medication / dose / pill / refill / reminder",
+  "lang": "en"
+}
